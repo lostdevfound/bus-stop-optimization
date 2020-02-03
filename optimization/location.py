@@ -40,11 +40,11 @@ class Location:
 
 class BusStop(Location):
     """ Bus stop class"""
-    def __init__(self, lat, long, id, blocks):
+    def __init__(self, lat, long, id, blocks, connectedness = 0):
         super().__init__(lat, long, id, blocks)
         self.demand = 0
         self.weight = 0
-        self.connectedness = 0
+        self.connectedness = connectedness
         self.serving = []
 
     def __repr__(self):
