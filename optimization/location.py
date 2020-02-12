@@ -27,8 +27,10 @@ class Location:
         return (self.lat, self.long)
 
 
-    def findNeighbors(self, neighborList, km = 1):
+    def findNeighbors(self, neighborList, km):
         """ Find Locations within km radius """
+        self.neighborhood = []
+
         for neighbor in neighborList:
 
             if isClose(self, neighbor, km):
@@ -40,15 +42,50 @@ class Location:
 
 class BusStop(Location):
     """ Bus stop class"""
-    def __init__(self, lat, long, id, blocks, connectedness = 0):
+    def __init__(self, lat, long, id, blocks, j, connectedness=0):
         super().__init__(lat, long, id, blocks)
         self.demand = 0
         self.weight = 0
         self.connectedness = connectedness
-        self.serving = []
+        self.competitors = 0
+        self.j = j  # this is an index which is used in optimization formula
 
     def __repr__(self):
         return f'busStop id:{self.id}'
+
+
+    def distTo(demandNode):
+        pass
+
+
+    def findCompetitors(self, busStopList, radius):
+        """ Find competitors (other bus stops) which are within radius """
+
+        self.competitors = []
+
+        for stop in busStopList:
+            # if other stops within the radius and other stop is not the stop we measure from then add
+            if kmDist(self,stop) <= radius and self is not stop:
+                self.competitors.append(stop)
+
+        return self.competitors
+
+
+    def normalization(self, alpha, beta, demandNode):
+        if self.competitors == 0:
+            raise Exception('First need to find bus stop competitors by calling findCompetitors.')
+
+        # if no competitors the normalization is 1
+        if len(self.competitors) == 0:
+            return 1
+
+        res = 0
+
+        for compet in self.competitors:
+            res += compet.weight**alpha*kmDist(compet,demandNode)**(-beta)
+
+        return res
+
 
 class Block(Location):
     """ Demand point, can be Dissemintaion Area or Dissemintaion Block """
@@ -56,7 +93,7 @@ class Block(Location):
         super().__init__(lat, long, id, stops)
         self.pop = pop
         self.dwel = dwel
-
+        self.demand = 0
     def __repr__(self):
         return f'block id:{self.id}'
 
