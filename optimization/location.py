@@ -45,7 +45,7 @@ class BusStop(Location):
     def __init__(self, lat, long, id, blocks, j, connectedness=0):
         super().__init__(lat, long, id, blocks)
         self.demand = 0
-        self.weight = 0
+        self.weight = 1
         self.connectedness = connectedness
         self.competitors = 0
         self.j = j  # this is an index which is used in optimization formula
@@ -85,6 +85,8 @@ class BusStop(Location):
             res += compet.weight**alpha*kmDist(compet,demandNode)**(-beta)
 
         return res
+        # add self to nomalization
+        # return res + self.weight**alpha*kmDist(self,demandNode)**(-beta)
 
 
 class Block(Location):
