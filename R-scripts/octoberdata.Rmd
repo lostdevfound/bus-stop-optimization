@@ -1,0 +1,76 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message=FALSE,warning=FALSE,fig.height=4)
+library(tidyverse)
+```
+
+```{r}
+oct<-read.csv("oct.csv")
+
+```
+
+```{r}
+octt<-filter(oct,direction=="NORTH")%>%arrange(desc(from_no))
+
+to<-octt[11]
+to_no<-unique(to)
+to_no<-add_column(to_no,boardings=0:0,allightings=0:0)
+to_no
+
+```
+
+```{r}
+length_data<-nrow(octt)
+length_data
+for(i in 1:length_data){
+   for(j in 1:num_row){
+      if(octt[[11]][i]==to_no[[1]][j]){
+            to_no[[2]][j]=to_no[[2]][j]+octt[[35]][i]
+      }
+   }
+   
+}
+
+to_no
+
+```
+
+```{r}
+for(i in 1:length_data){
+   for(j in 1:num_row){
+      if(octt[[11]][i]==to_no[[1]][j]){
+            to_no[[3]][j]=to_no[[3]][j]+octt[[36]][i]
+      }
+   }
+   
+}
+to_no
+names(to_no)<-"Stop_ID"
+names(to_no)[2]<-"Boardings"
+names(to_no)[3]<-"Aligtings"
+to_no
+to_no<-add_column(to_no,Total=0:0)
+#write.table(to_no,file="OctoberDemand.csv", sep=",")
+
+```
+
+```{r}
+to_no[4]
+
+for(i in 1:45){
+  to_no[[4]][i]=to_no[[2]][i]+to_no[[3]][i]
+}
+to_no
+#ggplot(to_no, aes(Stop_ID, Totadl)) + geom_bar(stat = "identity", aes(fill = type)) 
+oct_data<-read_csv("OctoberDemandSorted.csv")
+oct_data
+#ggplot(oct_data)+
+#  geom_bar(aes(x = Stop_ID,y = Total),stat='identity') 
+arrange(oct_data,desc(Total))
+
+
+```
