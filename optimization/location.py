@@ -33,7 +33,7 @@ class Location:
 
         for neighbor in neighborList:
 
-            if isClose(self, neighbor, km):
+            if isClose(self, neighbor, km) and self is not neighbor:
                 self.neighborhood.append(neighbor)
 
         return self.neighborhood
@@ -47,8 +47,9 @@ class BusStop(Location):
         self.demand = 0
         self.weight = 1
         self.connectedness = connectedness
-        self.competitors = 0
-        self.j = j  # this is an index which is used in optimization formula
+        self.competitors = 0    # this is a holder for findCompetitors method which return a list of competitor stops
+        self.j = j              # this is an index which is used in optimization formula
+        self.active = 1         # this should be 0 or 1. 0 if bus stop is removed, 1 if present on the route.
 
     def __repr__(self):
         return f'busStop id:{self.id}'
@@ -65,28 +66,11 @@ class BusStop(Location):
 
         for stop in busStopList:
             # if other stops within the radius and other stop is not the stop we measure from then add
-            if kmDist(self,stop) <= radius and self is not stop:
+            # if kmDist(self,stop) <= radius and self is not stop:
+            if isClose(self, stop, radius) and self is not stop:
                 self.competitors.append(stop)
 
         return self.competitors
-
-
-    def normalization(self, alpha, beta, demandNode):
-        if self.competitors == 0:
-            raise Exception('First need to find bus stop competitors by calling findCompetitors.')
-
-        # if no competitors the normalization is 1
-        if len(self.competitors) == 0:
-            return 1
-
-        res = 0
-
-        for compet in self.competitors:
-            res += compet.weight**alpha*kmDist(compet,demandNode)**(-beta)
-
-        return res
-        # add self to nomalization
-        # return res + self.weight**alpha*kmDist(self,demandNode)**(-beta)
 
 
 class Block(Location):
