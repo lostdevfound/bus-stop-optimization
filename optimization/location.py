@@ -47,17 +47,12 @@ class BusStop(Location):
         self.demand = 0
         self.weight = 1
         self.connectedness = connectedness
-        self.competitors = 0    # this is a holder for findCompetitors method which return a list of competitor stops
+        self.competitors = []
         self.j = j              # this is an index which is used in optimization formula
         self.active = 1         # this should be 0 or 1. 0 if bus stop is removed, 1 if present on the route.
 
     def __repr__(self):
         return f'busStop id:{self.id}'
-
-
-    def distTo(demandNode):
-        pass
-
 
     def findCompetitors(self, busStopList, radius):
         """ Find competitors (other bus stops) which are within radius """
@@ -72,6 +67,11 @@ class BusStop(Location):
 
         return self.competitors
 
+    def computeWeight(self):
+        """ This is a test function which will set weight to connectedness number """
+        self.weight = self.connectedness
+
+
 
 class Block(Location):
     """ Demand point, can be Dissemintaion Area or Dissemintaion Block """
@@ -79,7 +79,7 @@ class Block(Location):
         super().__init__(lat, long, id, stops)
         self.pop = pop
         self.dwel = dwel
-        self.demand = 0
+        self.demand = 1
     def __repr__(self):
         return f'block id:{self.id}'
 
