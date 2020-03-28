@@ -42,10 +42,10 @@ class Location:
 
 class BusStop(Location):
     """ Bus stop class"""
-    def __init__(self, lat, long, id, blocks, j, connectedness=0):
+    def __init__(self, lat, long, id, blocks, j, connectedness=0, weight=1):
         super().__init__(lat, long, id, blocks)
         self.demand = 0
-        self.weight = 1
+        self.weight = weight
         self.connectedness = connectedness
         self.competitors = []
         self.j = j              # this is an index which is used in optimization formula
@@ -66,10 +66,6 @@ class BusStop(Location):
                 self.competitors.append(stop)
 
         return self.competitors
-
-    def computeWeight(self):
-        """ This is a test function which will set weight to connectedness number """
-        self.weight = self.connectedness
 
 
 
